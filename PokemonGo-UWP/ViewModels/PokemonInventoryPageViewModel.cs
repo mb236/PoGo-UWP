@@ -18,6 +18,7 @@ using Template10.Mvvm;
 using Template10.Services.NavigationService;
 using Template10.Utils;
 using Universal_Authenticator_v2.Views;
+using Windows.UI.Xaml;
 
 namespace PokemonGo_UWP.ViewModels
 {
@@ -38,9 +39,9 @@ namespace PokemonGo_UWP.ViewModels
             if (suspensionState.Any())
             {
                 // Recovering the state
-                PokemonInventory = (ObservableCollection<PokemonDataWrapper>) suspensionState[nameof(PokemonInventory)];                                
+                PokemonInventory = (ObservableCollection<PokemonDataWrapper>)suspensionState[nameof(PokemonInventory)];
                 EggsInventory = (ObservableCollection<PokemonDataWrapper>)suspensionState[nameof(EggsInventory)];
-                CurrentPokemonSortingMode = (PokemonSortingModes) suspensionState[nameof(CurrentPokemonSortingMode)];
+                CurrentPokemonSortingMode = (PokemonSortingModes)suspensionState[nameof(CurrentPokemonSortingMode)];
             }
             else if (parameter is bool)
             {
@@ -52,7 +53,7 @@ namespace PokemonGo_UWP.ViewModels
                 foreach (var pokemonData in GameClient.EggsInventory)
                 {
                     EggsInventory.Add(new PokemonDataWrapper(pokemonData));
-                }                    
+                }
                 CurrentPokemonSortingMode = PokemonSortingModes.Combat;
             }
             await Task.CompletedTask;
@@ -109,7 +110,7 @@ namespace PokemonGo_UWP.ViewModels
             {
                 Set(ref _currentPokemonSortingMode, value);
                 // When this changes we need to sort the collection again     
-                UpdateSorting();           
+                UpdateSorting();
             }
         }
 
@@ -173,14 +174,14 @@ namespace PokemonGo_UWP.ViewModels
                 case PokemonSortingModes.Name:
                     PokemonInventory =
                         new ObservableCollection<PokemonDataWrapper>(
-                            PokemonInventory.OrderBy(pokemon => pokemon.PokemonId.ToString()));
+                            PokemonInventory.OrderBy(pokemon => Utils.Resources.Pokemon.GetString(pokemon.PokemonId.ToString())));
                     break;
                 case PokemonSortingModes.Combat:
                     PokemonInventory = new ObservableCollection<PokemonDataWrapper>(PokemonInventory.OrderByDescending(pokemon => pokemon.Cp));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CurrentPokemonSortingMode), CurrentPokemonSortingMode, null);
-            }            
+            }
             RaisePropertyChanged(() => PokemonInventory);
         }
 
